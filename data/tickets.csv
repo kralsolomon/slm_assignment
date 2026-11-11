@@ -1,0 +1,81 @@
+id,text,lang,category,urgency,escalate,route
+T001,"Здравствуйте! С карты списали деньги за заказ дважды, номер заказа 48213. Верните, пожалуйста, лишнюю сумму.",ru,billing,1,0,billing
+T002,Почему мне пришёл счёт на подписку Premium? Я её не подключал.,ru,billing,1,0,billing
+T003,"Подскажите, как скачать чек за прошлый месяц для бухгалтерии?",ru,billing,0,0,billing
+T004,"Сәлеметсіз бе! Тапсырыс үшін төлем екі рет шешіліп қалды, ақшаны қайтарып беріңізші.",kk,billing,1,0,billing
+T005,Төлем чегін қайдан жүктеп алуға болады? Бухгалтерияға керек.,kk,billing,0,0,billing
+T006,I was charged twice for order 55102. Please refund the duplicate payment.,en,billing,1,0,billing
+T007,"Do you offer invoices with VAT for company purchases? Not urgent, just planning.",en,billing,0,0,billing
+T008,"Добрый день, карточкадан ақша шешілді, але заказ не оформился. Деньги где?",mix,billing,1,0,billing
+T009,"С моей карты списали 185 000 тенге, я ничего не покупал! Это мошенничество, блокируйте карту и срочно разберитесь!",ru,billing,2,1,human
+T010,"Unauthorized transaction of 92,000 KZT appeared on my wallet. I did not make it. I'm contacting my bank and a lawyer.",en,billing,2,1,human
+T011,"Промокод NEWYEAR не применяется на оплате, пишет «недействителен». Он действует только до сегодняшнего вечера.",ru,billing,2,0,billing
+T012,"Қайтарым ақшасы 10 күн болды, әлі келген жоқ. Қашан түседі?",kk,billing,1,0,billing
+T013,"Спасибо, что вернули деньги, всё пришло!",ru,billing,0,0,billing
+T014,"Сәлем, подписканы отменила, но ақша тағы шешілді. Верните пожалуйста.",mix,billing,1,0,billing
+T015,"Не могу оплатить заказ: карта Kaspi отклоняется, а в магазине через неё всё проходит.",ru,billing,1,0,billing
+T016,Your refund policy says 7 days but support told me 14. Which is correct? I need it in writing.,en,billing,0,0,billing
+T017,Верните деньги за заказ немедленно или я подам в суд и напишу в Агентство по защите прав потребителей.,ru,billing,2,1,human
+T018,Could you change the card on my subscription? The old one expires next month.,en,billing,0,0,billing
+T019,"Кэшбэк за октябрь не начислили, а должен был быть 5%. Проверьте, пожалуйста.",ru,billing,0,0,billing
+T020,"Төлем өтпей жатыр, «қате 502» деп шығады, ал картадан ақша шешілген. Көмектесіңіз, тез!",kk,billing,2,0,billing
+T021,"Курьер должен был приехать вчера, заказ 60321 до сих пор не доставлен.",ru,delivery,1,0,delivery
+T022,Где мой заказ? Трекинг не обновляется уже 5 дней.,ru,delivery,1,0,delivery
+T023,Можно изменить адрес доставки на другой? Заказ ещё не отправлен.,ru,delivery,1,0,delivery
+T024,Тапсырыс қашан жеткізіледі? Нөмірі 70418.,kk,delivery,0,0,delivery
+T025,"Курьер қоңырау шалмай кетіп қалды, тапсырыс алынбады.",kk,delivery,1,0,delivery
+T026,My package arrived with a broken screen. Order 77120. I want a replacement.,en,delivery,1,0,delivery
+T027,What are your delivery times to Aktobe?,en,delivery,0,0,delivery
+T028,"Курьер вчера сказал «жарты сағатта жетемін», до сих пор нет, а я үйде отырмын.",mix,delivery,1,0,delivery
+T029,"Курьер нагрубил и толкнул меня у подъезда. Я требую, чтобы его уволили, и сообщу в полицию.",ru,delivery,2,1,human
+T030,"Доставили не мой заказ, в коробке чужие вещи и чужие документы.",ru,delivery,1,0,delivery
+T031,"Заказ с лекарствами для отца должен был прийти утром, уже вечер, отец без таблеток!",ru,delivery,2,1,human
+T032,Can I pick up my order from a pickup point instead of home delivery?,en,delivery,0,0,delivery
+T033,Тапсырыс жолда жоғалып кетті ме? Трек-нөмір жұмыс істемейді.,kk,delivery,1,0,delivery
+T034,"Курьер оставил посылку у двери, и её украли. Хочу компенсацию.",ru,delivery,1,0,delivery
+T035,"Здравствуйте, доставка бойынша сұрақ: можно ли заказать доставку на выходные?",mix,delivery,0,0,delivery
+T036,"Заказ пришёл с опозданием на 3 часа, пицца холодная. Ужасный сервис!!!",ru,delivery,1,0,delivery
+T037,"Delivery was supposed to be today before 6 PM for my daughter's birthday party, still nothing at 5:30!",en,delivery,2,0,delivery
+T038,"Хочу отказаться от заказа 81234, курьер ещё не выехал.",ru,delivery,1,0,delivery
+T039,"Рахмет, тапсырыс уақытында жетті, курьер өте сыпайы болды!",kk,delivery,0,0,delivery
+T040,"Посылка с моим паспортом для визы должна прийти сегодня, вылет завтра в 8 утра. Что с доставкой?",ru,delivery,2,0,delivery
+T041,"Заказ жеткізілді деп жазылған, бірақ мен ештеңе алған жоқпын. Курьер тапсырыс қайда қалдырғанын айтпайды.",mix,delivery,1,0,delivery
+T042,Driver was drunk and almost hit my car while delivering. I have the plate number and will report this to the police.,en,delivery,2,1,human
+T043,"Приложение вылетает сразу после запуска на iPhone 13, iOS 17.",ru,technical,1,0,technical
+T044,"Кнопка «Оформить заказ» не нажимается в корзине, пробовал на двух телефонах.",ru,technical,1,0,technical
+T045,"Қосымша ашылмайды, ақ экран көрсетеді.",kk,technical,1,0,technical
+T046,The search function returns no results for anything since yesterday's update.,en,technical,1,0,technical
+T047,Dark mode would be great. Any plans?,en,technical,0,0,technical
+T048,"Қосымшада фото жүктей алмаймын, ошибка «upload failed».",mix,technical,1,0,technical
+T049,"Сайт не открывается вообще, ни у меня, ни у коллег. Мы не можем оформить корпоративный заказ, это блокирует всю нашу работу!",ru,technical,2,0,technical
+T050,Push-уведомления приходят с задержкой в несколько часов.,ru,technical,0,0,technical
+T051,"Қосымшада қазақ тілі жоқ, қосуға бола ма?",kk,technical,0,0,technical
+T052,"App crashes when I try to upload a photo larger than 5 MB. Android 14, version 3.2.1.",en,technical,1,0,technical
+T053,На странице оплаты видна чужая корзина и чужой адрес. Похоже на утечку данных.,ru,technical,2,1,human
+T054,"Карта на сайте показывает неправильное местоположение, смещение на пару километров.",ru,technical,0,0,technical
+T055,"Қосымша өте баяу жұмыс істейді, каждый экран грузится по 20 секунд.",mix,technical,1,0,technical
+T056,I found a bug: I can see other users' order history by changing the ID in the URL. Reporting responsibly.,en,technical,2,1,human
+T057,"Не работает чат с курьером, сообщения не отправляются.",ru,technical,1,0,technical
+T058,"Қосымшаның жаңа нұсқасы жүктелмейді, Play Market қате береді.",kk,technical,1,0,technical
+T059,"Здравствуйте, после обновления пропали все мои избранные товары.",ru,technical,1,0,technical
+T060,Is there an API for placing bulk orders?,en,technical,0,0,technical
+T061,"Штрих-код в приложении не сканируется, камера не включается.",ru,technical,1,0,technical
+T062,"Тіркелу кезінде captcha көрінбейді, пробовал разные браузеры.",mix,technical,1,0,technical
+T063,Не приходит SMS-код для входа в аккаунт уже полчаса.,ru,account,1,0,account
+T064,Как изменить номер телефона в профиле?,ru,account,0,0,account
+T065,"Құпия сөзімді ұмытып қалдым, қалпына келтіру хаты келмейді.",kk,account,1,0,account
+T066,Please delete my account and all my personal data.,en,account,1,0,account
+T067,How do I change my email address?,en,account,0,0,account
+T068,"Аккаунтыма кіре алмай жатырмын, пароль қате дейді, но я только что его менял.",mix,account,1,0,account
+T069,"Мой аккаунт взломали! С него заказали товары на 120 000 тенге, пароль не подходит. Срочно блокируйте!",ru,account,2,1,human
+T070,Профиль суретін қалай ауыстыруға болады?,kk,account,0,0,account
+T071,I'm locked out of my account after too many attempts. I need to access my order today for a return deadline.,en,account,2,0,account
+T072,"Хочу объединить два аккаунта, один на почте, другой на телефоне.",ru,account,0,0,account
+T073,"Пришло письмо о смене пароля, но я его не менял. Что делать?",ru,account,1,0,account
+T074,"Бонус картаны байлау мүмкін емес, номер уже занят.",mix,account,0,0,account
+T075,"Thanks, I got into my account now!",en,account,0,0,account
+T076,"Заблокировали аккаунт без объяснения причин! Я пишу уже третий раз. Если сегодня не разблокируете, пойду в прокуратуру.",ru,account,2,1,human
+T077,Екі факторлы аутентификацияны қалай қосуға болады?,kk,account,0,0,account
+T078,"Не могу войти по Apple ID, пишет «ошибка авторизации».",ru,account,1,0,account
+T079,My account shows a different name than what I registered with.,en,account,0,0,account
+T080,Как удалить сохранённые адреса доставки?,ru,account,0,0,account
