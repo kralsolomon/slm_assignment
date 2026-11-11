@@ -8,9 +8,11 @@ The API key comes from the OPENROUTER_API_KEY environment variable (OpenRouter, 
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
@@ -193,13 +195,69 @@ def plot_loss(log_history: list[dict], path: str, title: str = "Training loss"):
 def make_client():
     from openai import OpenAI
 
-    return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=os.environ["OPENROUTER_API_KEY"])
+    # max_retries=0: retries and rate limiting are handled in _ask, so every request is counted once
+    return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=os.environ["OPENROUTER_API_KEY"], max_retries=0)
 
 
-def _ask(client, model: str, user: str, system: str | None = None, max_tokens: int = 4000) -> str:
+class _Throttle:
+    """Spaces requests evenly across all threads (new OpenRouter accounts are limited to 20 requests/min per model)."""
+
+    def __init__(self, rpm: float):
+        self.gap, self.lock, self.next = 60.0 / rpm, threading.Lock(), 0.0
+
+    def wait(self):
+        with self.lock:
+            now = time.monotonic()
+            slot = max(now, self.next)
+            self.next = slot + self.gap
+        time.sleep(max(0.0, slot - now))
+
+
+_THROTTLE = _Throttle(18)
+
+
+def set_rpm(rpm: float):
+    """Change the request rate limit (default 18/min, just under the 20/min new-account limit)."""
+    global _THROTTLE
+    _THROTTLE = _Throttle(rpm)
+
+
+def _ask(client, model: str, user: str, system: str | None = None, max_tokens: int = 4000, tries: int = 8) -> str:
     msgs = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": user}]
-    r = client.chat.completions.create(model=model, max_tokens=max_tokens, messages=msgs)
-    return r.choices[0].message.content or ""
+    last = None
+    for k in range(tries):
+        _THROTTLE.wait()
+        try:
+            r = client.chat.completions.create(model=model, max_tokens=max_tokens, messages=msgs)
+            if not getattr(r, "choices", None):
+                raise RuntimeError(f"no choices in response: {getattr(r, 'error', None) or r!r}"[:300])
+            return r.choices[0].message.content or ""
+        except Exception as e:  # rate limit (429), upstream hiccup, timeout: wait and try again
+            last = e
+            time.sleep(min(5 * 2 ** k, 60))
+    raise last
+
+
+def _cache_load(path: str | None) -> dict:
+    out = {}
+    if path and os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                try:
+                    d = json.loads(line)
+                    out[d["key"]] = d["value"]
+                except (json.JSONDecodeError, KeyError):
+                    pass
+    return out
+
+
+_CACHE_LOCK = threading.Lock()
+
+
+def _cache_put(path: str | None, key: str, value):
+    if path:
+        with _CACHE_LOCK, open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps({"key": key, "value": value}, ensure_ascii=False) + "\n")
 
 
 def _json_array(text: str):
@@ -225,16 +283,24 @@ def _gen_prompt(cat: str, urg: int, esc: bool, lang: str, n: int) -> str:
     )
 
 
-def generate_raw(client, model: str, n_per_cell: int = 10, workers: int = 6) -> pd.DataFrame:
-    """One Claude call per (category, urgency/escalate combo, language) cell -> n tickets with INTENDED labels."""
+def generate_raw(client, model: str, n_per_cell: int = 10, workers: int = 4,
+                 cache: str | None = "data/raw_cells.jsonl") -> pd.DataFrame:
+    """One Claude call per (category, urgency/escalate combo, language) cell -> n tickets with INTENDED labels.
+    Finished cells are saved to `cache`, so if the run stops you can re-run the cell and it continues where it stopped."""
     cells = [(c, u, e, l) for c in CATEGORIES for (u, e) in COMBOS for l in LANGS]
+    done = _cache_load(cache)
 
     def one(cell):
         c, u, e, l = cell
+        key = f"{c}|{u}|{int(e)}|{l}|{n_per_cell}"
+        if key in done:
+            return done[key]
         for _ in range(2):  # one retry on malformed output
             arr = _json_array(_ask(client, model, _gen_prompt(c, u, e, l, n_per_cell), max_tokens=4000))
             if isinstance(arr, list):
-                return [dict(text=s, category=c, urgency=u, escalate=e, lang=l) for s in arr if isinstance(s, str)]
+                res = [dict(text=s, category=c, urgency=u, escalate=e, lang=l) for s in arr if isinstance(s, str)]
+                _cache_put(cache, key, res)
+                return res
         return []
 
     with ThreadPoolExecutor(workers) as ex:
@@ -255,20 +321,27 @@ def _jacc(a: set, b: set) -> float:
     return len(a & b) / max(1, len(a | b))
 
 
-def relabel(client, model: str, df: pd.DataFrame, batch: int = 10, workers: int = 6) -> pd.DataFrame:
+def relabel(client, model: str, df: pd.DataFrame, batch: int = 10, workers: int = 4,
+            cache: str | None = "data/relabel_cache.jsonl") -> pd.DataFrame:
     """Ask the big LLM to label each ticket blindly (it does not see the intended labels)."""
     system = ("You label customer support tickets. For each ticket return category (one of "
               + ", ".join(f"{k}: {v}" for k, v in CATEGORIES.items()) + f"), urgency ({URGENCY_TEXT}), and escalate ({ESCALATE_TEXT}). "
               'Return ONLY a JSON array of objects {"i": <ticket number>, "category": ..., "urgency": 0|1|2, "escalate": true|false}.')
     chunks = [df.iloc[i:i + batch] for i in range(0, len(df), batch)]
+    done = _cache_load(cache)
 
     def one(chunk):
         body = "\n".join(f"{k}. {t}" for k, t in enumerate(chunk["text"]))
+        key = hashlib.sha1(body.encode("utf-8")).hexdigest()
+        if key in done:
+            return done[key]
         for _ in range(2):
             arr = _json_array(_ask(client, model, body, system=system, max_tokens=1500))
             if isinstance(arr, list):
                 got = {a.get("i"): a for a in arr if isinstance(a, dict)}
-                return [got.get(k) for k in range(len(chunk))]
+                res = [got.get(k) for k in range(len(chunk))]
+                _cache_put(cache, key, res)
+                return res
         return [None] * len(chunk)
 
     with ThreadPoolExecutor(workers) as ex:
